@@ -12,26 +12,27 @@ Leaving all the work you have to do in your code is write MySQL Queries. Saving 
 Installation
 ============
 
-Linux/Mac OS X
-==============
-cd PySQLPool
-python setup.py build
-sudo python setup.py install
+Linux/Mac OS X::
 
-Windows
-=======
-cd PySQLPool
-python setup.py build 
-python setup.py install 
+    cd PySQLPool
+    python setup.py build
+    sudo python setup.py install
+
+Windows::
+
+    cd PySQLPool
+    python setup.py build 
+    python setup.py install 
 
 ====================
-How to Use PySQLPool
+Documentation
 ====================
 
-Documentation can be read locally at doc/index.rst or via the web at http://packages.python.org/PySQLPool
+Documentation can be read locally at doc/index.rst or via the web at 
+http://packages.python.org/PySQLPool
 
-You can also generate your own html docs via the make file in doc/. This will produce the same docs as 
-hosted on the website.
+You can also generate your own html docs via the make file in doc/. 
+This will produce the same docs as hosted on the website.
 
 =======
 License
@@ -52,9 +53,11 @@ Links
 =====
 
 Homepages: 
-* https://github.com/nerdynick/PySQLPool 
-* http://code.google.com/p/pysqlpool/
-* https://launchpad.net/pysqlpool/
+
+- https://github.com/nerdynick/PySQLPool 
+- http://code.google.com/p/pysqlpool/
+- https://launchpad.net/pysqlpool/
           
-Documentation: 
-* http://packages.python.org/PySQLPool/
+Documentation:
+ 
+- http://packages.python.org/PySQLPool/
