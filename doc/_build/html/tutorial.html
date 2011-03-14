@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Getting Started with PySQLPool &mdash; PySQLPool v0.3.6 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.3.6',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="PySQLPool v0.3.6 documentation" href="index.html" />
+    <link rel="next" title="PySQLPool Object Reference" href="reference.html" />
+    <link rel="prev" title="Welcome to PySQLPool’s documentation!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="reference.html" title="PySQLPool Object Reference"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to PySQLPool’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">PySQLPool v0.3.6 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="getting-started-with-pysqlpool">
+<h1>Getting Started with PySQLPool<a class="headerlink" href="#getting-started-with-pysqlpool" title="Permalink to this headline">¶</a></h1>
+<p>The basic usage of PySQLPool is pretty simple as you can see in this basic example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">PySQLPool</span>
+
+<span class="n">connection</span> <span class="o">=</span> <span class="n">PySQLPool</span><span class="o">.</span><span class="n">getNewConnection</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s">&#39;root&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s">&#39;123456&#39;</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="s">&#39;mydb&#39;</span><span class="p">)</span>
+<span class="n">query</span> <span class="o">=</span> <span class="n">PySQLPool</span><span class="o">.</span><span class="n">getNewQuery</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+<span class="n">query</span><span class="o">.</span><span class="n">Query</span><span class="p">(</span><span class="s">&#39;select * from table&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">query</span><span class="o">.</span><span class="n">record</span><span class="p">:</span>
+    <span class="k">print</span> <span class="n">row</span><span class="p">[</span><span class="s">&#39;column&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="section" id="selecting-data">
+<h2>Selecting Data<a class="headerlink" href="#selecting-data" title="Permalink to this headline">¶</a></h2>
+<p>Here is how you would select a set of data from the DB and print it out</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span><span class="o">.</span><span class="n">Query</span><span class="p">(</span><span class="s">&#39;select * from table&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">query</span><span class="o">.</span><span class="n">record</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="k">print</span> <span class="s">&#39;Column Value:&#39;</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="s">&#39;column&#39;</span><span class="p">]</span>
+<span class="go">Column Value: 0</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="updating-data">
+<h2>Updating Data<a class="headerlink" href="#updating-data" title="Permalink to this headline">¶</a></h2>
+<p>Here is how you would update a table and see how many rows your update statement affected</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span><span class="o">.</span><span class="n">Query</span><span class="p">(</span><span class="s">&#39;update table set column = 1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="s">&#39;Affected Rows:&#39;</span><span class="p">,</span> <span class="n">query</span><span class="o">.</span><span class="n">affectedRows</span>
+<span class="go">Affected Rows: 10</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inserting-new-data">
+<h2>Inserting New Data<a class="headerlink" href="#inserting-new-data" title="Permalink to this headline">¶</a></h2>
+<p>Here is how you would insert a new row and get back its insert ID for Auto-Increment indexes</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span><span class="o">.</span><span class="n">Query</span><span class="p">(</span><span class="s">&#39;insert into table (&#39;</span><span class="n">column</span><span class="s">&#39;) values (&#39;</span><span class="mi">1</span><span class="s">&#39;)&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="s">&#39;Last Insert ID:&#39;</span><span class="p">,</span> <span class="n">query</span><span class="o">.</span><span class="n">lastInsertID</span>
+<span class="go">Last Insert ID: 11</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="using-pysqlpool-with-threads">
+<h2>Using PySQLPool with Threads<a class="headerlink" href="#using-pysqlpool-with-threads" title="Permalink to this headline">¶</a></h2>
+<p>When using PySQLPool with threads you need to do things a little bit different from a single threaded app.
+The following example will show you a basic code structure you would use with a thread:</p>
+<div class="highlight-python"><pre>import PySQLPool
+import threading
+
+connection = PySQLPool.getNewConnection(username='root', password='123456', host='localhost', db='mydb')
+
+class MyThread(threading.thread):
+    def __init__(self):
+            ...
+
+    def run(self):
+        query = PySQLPool.getNewQuery(connection)
+        query.Query('insert into table ('column') values ('1')')</pre>
+</div>
+<p>By requesting a new PySQLQuery object in the threads run method you allow the pooling layer to create new connections
+to the DB as needed for each thread. Don&#8217;t worry you will not create 1 connect per thread but will create new ones as
+demand rises based on speed of threads and query execution time, but you will not create more then the limit.</p>
+</div>
+<div class="section" id="setting-the-max-connection-limit">
+<h2>Setting the Max Connection Limit<a class="headerlink" href="#setting-the-max-connection-limit" title="Permalink to this headline">¶</a></h2>
+<p>The max connection limit is a limiter on the auto creation of new connections based on thread demand. The limit is set
+globally to be used by each set of connection credentials. What that means is that for each set of connection arguments
+you use, specifically the host/username/password/db, the max connection limiter will keep those connections &lt;= to its
+value. There currently is no way to set a limit per connection credentials.</p>
+<p>By default the limit is set to 10, but you can change it farely easy.:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">PySQLPool</span>
+<span class="n">PySQLPool</span><span class="o">.</span><span class="n">getNewPool</span><span class="p">()</span><span class="o">.</span><span class="n">maxActiveConnections</span> <span class="o">=</span> <span class="mi">1</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="stream-selected-data">
+<h2>Stream Selected Data<a class="headerlink" href="#stream-selected-data" title="Permalink to this headline">¶</a></h2>
+<p>Sometimes you may be dealing with a very large dataset and would wish not to load it all up into memory on your local
+machine, but would rather let it stream back from the MySQL server row by row. You can achieve this by simply changing
+out what method you call on your PySQLQuery object.:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">PySQLPool</span>
+
+<span class="n">connection</span> <span class="o">=</span> <span class="n">PySQLPool</span><span class="o">.</span><span class="n">getNewConnection</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s">&#39;root&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s">&#39;123456&#39;</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="s">&#39;mydb&#39;</span><span class="p">)</span>
+<span class="n">query</span> <span class="o">=</span> <span class="n">PySQLPool</span><span class="o">.</span><span class="n">getNewQuery</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+<span class="n">query</span><span class="o">.</span><span class="n">QueryOne</span><span class="p">(</span><span class="s">&#39;select * from table&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">query</span><span class="o">.</span><span class="n">record</span><span class="p">:</span>
+    <span class="k">print</span> <span class="n">row</span><span class="p">[</span><span class="s">&#39;column&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>As you will notice we switched out the query.Query() with a query.QueryOne(). This causes PySQLPool/MySQLdb to return
+back to you a Python Generator that will fetch from the server row by row as you iterate through the results.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">Getting Started with PySQLPool</a><ul>
+<li><a class="reference external" href="#selecting-data">Selecting Data</a></li>
+<li><a class="reference external" href="#updating-data">Updating Data</a></li>
+<li><a class="reference external" href="#inserting-new-data">Inserting New Data</a></li>
+<li><a class="reference external" href="#using-pysqlpool-with-threads">Using PySQLPool with Threads</a></li>
+<li><a class="reference external" href="#setting-the-max-connection-limit">Setting the Max Connection Limit</a></li>
+<li><a class="reference external" href="#stream-selected-data">Stream Selected Data</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="index.html"
+                                  title="previous chapter">Welcome to PySQLPool&#8217;s documentation!</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="reference.html"
+                                  title="next chapter">PySQLPool Object Reference</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/tutorial.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="reference.html" title="PySQLPool Object Reference"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to PySQLPool’s documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">PySQLPool v0.3.6 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, Nick Verbeck.
+      Last updated on Mar 14, 2011.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.6.
+    </div>
+  </body>
+</html>

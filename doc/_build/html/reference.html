@@ -1,0 +1,480 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>PySQLPool Object Reference &mdash; PySQLPool v0.3.6 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.3.6',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="PySQLPool v0.3.6 documentation" href="index.html" />
+    <link rel="next" title="FAQs" href="faqs.html" />
+    <link rel="prev" title="Getting Started with PySQLPool" href="tutorial.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="faqs.html" title="FAQs"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="tutorial.html" title="Getting Started with PySQLPool"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">PySQLPool v0.3.6 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="pysqlpool-object-reference">
+<span id="module-PySQLPool"></span><h1>PySQLPool Object Reference<a class="headerlink" href="#pysqlpool-object-reference" title="Permalink to this headline">¶</a></h1>
+<p>This is a standard object reference for PySQLPool. Being that PySQLPool is a connection pooling wrapper
+around MySQLdb many of the same methods and parameters are support. You can kind hints or further docs
+by reading the MySQLdb Documentation at <a class="reference external" href="http://mysql-python.sourceforge.net/MySQLdb-1.2.2/">http://mysql-python.sourceforge.net/MySQLdb-1.2.2/</a></p>
+<div class="section" id="pysqlpool">
+<h2><tt class="xref docutils literal"><span class="pre">PySQLPool</span></tt><a class="headerlink" href="#pysqlpool" title="Permalink to this headline">¶</a></h2>
+<dl class="attribute">
+<dt id="PySQLPool.__version__">
+<tt class="descclassname">PySQLPool.</tt><tt class="descname">__version__</tt><a class="headerlink" href="#PySQLPool.__version__" title="Permalink to this definition">¶</a></dt>
+<dd>PySQLPool Version Number</dd></dl>
+
+<dl class="attribute">
+<dt id="PySQLPool.__author__">
+<tt class="descclassname">PySQLPool.</tt><tt class="descname">__author__</tt><a class="headerlink" href="#PySQLPool.__author__" title="Permalink to this definition">¶</a></dt>
+<dd>PySQLPool Author String</dd></dl>
+
+<dl class="function">
+<dt id="PySQLPool.getNewConnection">
+<tt class="descclassname">PySQLPool.</tt><tt class="descname">getNewConnection</tt><big>(</big><em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#PySQLPool.getNewConnection" title="Permalink to this definition">¶</a></dt>
+<dd>Fast function to generate a new PySQLConnection instance. Arguments are those of <a title="PySQLPool.PySQLConnection" class="reference internal" href="#PySQLPool.PySQLConnection"><tt class="xref docutils literal"><span class="pre">PySQLConnection</span></tt></a></dd></dl>
+
+<dl class="function">
+<dt id="PySQLPool.getNewQuery">
+<tt class="descclassname">PySQLPool.</tt><tt class="descname">getNewQuery</tt><big>(</big><span class="optional">[</span><em>connection</em><span class="optional">[</span>, <em>commitOnEnd</em><span class="optional">[</span>, <em>**kargs</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#PySQLPool.getNewQuery" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fast method to generate a new PySQLQuery instance.</p>
+<p>If an instance of a PySQLConnection object is passes for the connection parameter. It will be used for the
+connection. Otherwise **kargs will be used to generate a PySQLConnection instance via the <a title="PySQLPool.getNewConnection" class="reference internal" href="#PySQLPool.getNewConnection"><tt class="xref docutils literal"><span class="pre">getNewConnection()</span></tt></a> method.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="PySQLPool.getNewPool">
+<tt class="descclassname">PySQLPool.</tt><tt class="descname">getNewPool</tt><big>(</big><big>)</big><a class="headerlink" href="#PySQLPool.getNewPool" title="Permalink to this definition">¶</a></dt>
+<dd>Returns a reference to the current PySQLPool object</dd></dl>
+
+<dl class="function">
+<dt id="PySQLPool.terminatePool">
+<tt class="descclassname">PySQLPool.</tt><tt class="descname">terminatePool</tt><big>(</big><big>)</big><a class="headerlink" href="#PySQLPool.terminatePool" title="Permalink to this definition">¶</a></dt>
+<dd>Causes PySQLPool to commit and terminate all your current MySQL connections</dd></dl>
+
+<dl class="function">
+<dt id="PySQLPool.commitPool">
+<tt class="descclassname">PySQLPool.</tt><tt class="descname">commitPool</tt><big>(</big><big>)</big><a class="headerlink" href="#PySQLPool.commitPool" title="Permalink to this definition">¶</a></dt>
+<dd>Causes PySQLPool to commit all your current MySQL connections</dd></dl>
+
+<dl class="function">
+<dt id="PySQLPool.cleanupPool">
+<tt class="descclassname">PySQLPool.</tt><tt class="descname">cleanupPool</tt><big>(</big><big>)</big><a class="headerlink" href="#PySQLPool.cleanupPool" title="Permalink to this definition">¶</a></dt>
+<dd>Causes PySQLPool to analyse all current MySQL connections, and clean up an dead connections.</dd></dl>
+
+</div>
+<div class="section" id="pysqlpool-pysqlquery">
+<h2><tt class="xref docutils literal"><span class="pre">PySQLPool.PySQLQuery</span></tt><a class="headerlink" href="#pysqlpool-pysqlquery" title="Permalink to this headline">¶</a></h2>
+<p>The PySQLQuery class is by far one of the biggest work horses in the whole PySQLPool library, next to the PySQLPool class.
+It is responsable for handaling the execution of your query(s). Which in itself is a lot of work. PySQLQuery handles talking
+to the heart of PySQLPool, The PySQLPool class. To fetch a new connection or one that has been estabished. It then creates a
+MySQL cursor object to handle the execution of your sql statement against your MySQL database.</p>
+<dl class="class">
+<dt id="PySQLPool.PySQLQuery">
+<em class="property">class </em><tt class="descclassname">PySQLPool.</tt><tt class="descname">PySQLQuery</tt><big>(</big><em>PySQLConnectionObj</em><span class="optional">[</span>, <em>commitOnEnd</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#PySQLPool.PySQLQuery" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="PySQLPool.PySQLQuery.Pool">
+<tt class="descname">Pool</tt><a class="headerlink" href="#PySQLPool.PySQLQuery.Pool" title="Permalink to this definition">¶</a></dt>
+<dd>Used to store a reference to the PySQLPool object</dd></dl>
+
+<dl class="attribute">
+<dt id="PySQLPool.PySQLQuery.connInfo">
+<tt class="descname">connInfo</tt><a class="headerlink" href="#PySQLPool.PySQLQuery.connInfo" title="Permalink to this definition">¶</a></dt>
+<dd>Used to store the connection information to be used for talking to the db. This is a PySQLConnection instance.</dd></dl>
+
+<dl class="attribute">
+<dt id="PySQLPool.PySQLQuery.commitOnEnd">
+<tt class="descname">commitOnEnd</tt><a class="headerlink" href="#PySQLPool.PySQLQuery.commitOnEnd" title="Permalink to this definition">¶</a></dt>
+<dd>A boolean flag used to tell the connection that it should auto commit your statement at the end of its execution.</dd></dl>
+
+<dl class="attribute">
+<dt id="PySQLPool.PySQLQuery.record">
+<tt class="descname">record</tt><a class="headerlink" href="#PySQLPool.PySQLQuery.record" title="Permalink to this definition">¶</a></dt>
+<dd>A storage reference to your results that where returned from your last select statement.</dd></dl>
+
+<dl class="attribute">
+<dt id="PySQLPool.PySQLQuery.rowcount">
+<tt class="descname">rowcount</tt><a class="headerlink" href="#PySQLPool.PySQLQuery.rowcount" title="Permalink to this definition">¶</a></dt>
+<dd>The number of rows returned by your last select statement.</dd></dl>
+
+<dl class="attribute">
+<dt id="PySQLPool.PySQLQuery.affectedRows">
+<tt class="descname">affectedRows</tt><a class="headerlink" href="#PySQLPool.PySQLQuery.affectedRows" title="Permalink to this definition">¶</a></dt>
+<dd>The number of affected rows that your last delete/insert/update statement affected.</dd></dl>
+
+<dl class="attribute">
+<dt id="PySQLPool.PySQLQuery.conn">
+<tt class="descname">conn</tt><a class="headerlink" href="#PySQLPool.PySQLQuery.conn" title="Permalink to this definition">¶</a></dt>
+<dd>An internaly used reference to the current locked connection as returned by the PySQLPool class. This is an
+instance of a PySQLConnectionManager object.</dd></dl>
+
+<dl class="attribute">
+<dt id="PySQLPool.PySQLQuery.lastError">
+<tt class="descname">lastError</tt><a class="headerlink" href="#PySQLPool.PySQLQuery.lastError" title="Permalink to this definition">¶</a></dt>
+<dd>A reference to the last MySQL error as returned by the under lying MySQLdb library. You can reference this if you need.
+But PySQLQuery will raise this error forward for you to catch yourself.</dd></dl>
+
+<dl class="attribute">
+<dt id="PySQLPool.PySQLQuery.lastInsertID">
+<tt class="descname">lastInsertID</tt><a class="headerlink" href="#PySQLPool.PySQLQuery.lastInsertID" title="Permalink to this definition">¶</a></dt>
+<dd>The last auto incrament ID that an insert statement create.</dd></dl>
+
+<dl class="method">
+<dt id="PySQLPool.PySQLQuery.__del__">
+<tt class="descname">__del__</tt><big>(</big><big>)</big><a class="headerlink" href="#PySQLPool.PySQLQuery.__del__" title="Permalink to this definition">¶</a></dt>
+<dd>The destructor method used for freeing up any locked connections that may not have be release do to some reason.</dd></dl>
+
+<dl class="method">
+<dt id="PySQLPool.PySQLQuery.Query">
+<tt class="descname">Query</tt><big>(</big><em>query</em><span class="optional">[</span>, <em>args</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#PySQLPool.PySQLQuery.Query" title="Permalink to this definition">¶</a></dt>
+<dd>Depricated alias for <a title="PySQLPool.PySQLQuery.query" class="reference internal" href="#PySQLPool.PySQLQuery.query"><tt class="xref docutils literal"><span class="pre">query()</span></tt></a></dd></dl>
+
+<dl class="method">
+<dt id="PySQLPool.PySQLQuery.query">
+<tt class="descname">query</tt><big>(</big><em>query</em><span class="optional">[</span>, <em>args</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#PySQLPool.PySQLQuery.query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes the given query.</p>
+<p>query - string, query to execute on server
+args - optional sequence or mapping, parameters to use with query</p>
+<p>Note: If args is a sequence, then %s must be used as the parameter placeholder in the query.
+If a mapping is used, %(key)s must be used as the placeholder.</p>
+<p>Returns the number of affected rows.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PySQLPool.PySQLQuery.QueryOne">
+<tt class="descname">QueryOne</tt><big>(</big><em>query</em><span class="optional">[</span>, <em>args</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#PySQLPool.PySQLQuery.QueryOne" title="Permalink to this definition">¶</a></dt>
+<dd>Depricated alias for <a title="PySQLPool.PySQLQuery.queryOne" class="reference internal" href="#PySQLPool.PySQLQuery.queryOne"><tt class="xref docutils literal"><span class="pre">queryOne()</span></tt></a></dd></dl>
+
+<dl class="method">
+<dt id="PySQLPool.PySQLQuery.queryOne">
+<tt class="descname">queryOne</tt><big>(</big><em>query</em><span class="optional">[</span>, <em>args</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#PySQLPool.PySQLQuery.queryOne" title="Permalink to this definition">¶</a></dt>
+<dd><p>A generator style version of <a title="PySQLPool.PySQLQuery.query" class="reference internal" href="#PySQLPool.PySQLQuery.query"><tt class="xref docutils literal"><span class="pre">query()</span></tt></a>.</p>
+<p>Parameters are the same as <a title="PySQLPool.PySQLQuery.query" class="reference internal" href="#PySQLPool.PySQLQuery.query"><tt class="xref docutils literal"><span class="pre">query()</span></tt></a>, but instead of fetching all the data from the server at once.
+It is returned one row at a time for every iteration. Each row will be returned as well as record can
+still be used to access the current row.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PySQLPool.PySQLQuery.queryMany">
+<tt class="descname">queryMany</tt><big>(</big><em>query</em>, <em>args</em><big>)</big><a class="headerlink" href="#PySQLPool.PySQLQuery.queryMany" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="PySQLPool.PySQLQuery.executeMany">
+<tt class="descname">executeMany</tt><big>(</big><em>query</em>, <em>args</em><big>)</big><a class="headerlink" href="#PySQLPool.PySQLQuery.executeMany" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute a multi-row query.</p>
+<p>query - string, query to execute on server
+args - sequence of sequences or mappings, parameters to use with query.</p>
+<p>Returns the number of affected rows</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PySQLPool.PySQLQuery.queryMulti">
+<tt class="descname">queryMulti</tt><big>(</big><em>queries</em><big>)</big><a class="headerlink" href="#PySQLPool.PySQLQuery.queryMulti" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="PySQLPool.PySQLQuery.executeMulti">
+<tt class="descname">executeMulti</tt><big>(</big><em>queries</em><big>)</big><a class="headerlink" href="#PySQLPool.PySQLQuery.executeMulti" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes a sequence of query strings</p>
+<p>Each sequence item and be a sequence or a string. If item is a sequence the 1st item but be the query.
+The 2nd must be the replacement sequence or mapping to use with the query.</p>
+<p>Returns the total number of affected rows</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PySQLPool.PySQLQuery._GetConnection">
+<tt class="descname">_GetConnection</tt><big>(</big><big>)</big><a class="headerlink" href="#PySQLPool.PySQLQuery._GetConnection" title="Permalink to this definition">¶</a></dt>
+<dd>Private method used to fetch a connection from the central pool of connections</dd></dl>
+
+<dl class="method">
+<dt id="PySQLPool.PySQLQuery._ReturnConnection">
+<tt class="descname">_ReturnConnection</tt><big>(</big><big>)</big><a class="headerlink" href="#PySQLPool.PySQLQuery._ReturnConnection" title="Permalink to this definition">¶</a></dt>
+<dd>Private method used to return a connection to the central pool of connections</dd></dl>
+
+<dl class="method">
+<dt id="PySQLPool.PySQLQuery.escape">
+<tt class="descname">escape</tt><big>(</big><big>)</big><a class="headerlink" href="#PySQLPool.PySQLQuery.escape" title="Permalink to this definition">¶</a></dt>
+<dd>Varius string escape methods as provided by MySQLdb. Each matchs a function of the same name in MySQLdb</dd></dl>
+
+<dl class="method">
+<dt id="PySQLPool.PySQLQuery.escapeString">
+<tt class="descname">escapeString</tt><big>(</big><big>)</big><a class="headerlink" href="#PySQLPool.PySQLQuery.escapeString" title="Permalink to this definition">¶</a></dt>
+<dd>See <a title="PySQLPool.PySQLQuery.escape" class="reference internal" href="#PySQLPool.PySQLQuery.escape"><tt class="xref docutils literal"><span class="pre">escape()</span></tt></a></dd></dl>
+
+<dl class="method">
+<dt id="PySQLPool.PySQLQuery.escape_string">
+<tt class="descname">escape_string</tt><big>(</big><big>)</big><a class="headerlink" href="#PySQLPool.PySQLQuery.escape_string" title="Permalink to this definition">¶</a></dt>
+<dd>See <a title="PySQLPool.PySQLQuery.escape" class="reference internal" href="#PySQLPool.PySQLQuery.escape"><tt class="xref docutils literal"><span class="pre">escape()</span></tt></a></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="pysqlpool-pysqlpool">
+<h2><tt class="xref docutils literal"><span class="pre">PySQLPool.PySQLPool</span></tt><a class="headerlink" href="#pysqlpool-pysqlpool" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="PySQLPool.PySQLPool">
+<em class="property">class </em><tt class="descclassname">PySQLPool.</tt><tt class="descname">PySQLPool</tt><a class="headerlink" href="#PySQLPool.PySQLPool" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="PySQLPool.PySQLPool.__pool">
+<tt class="descname">__pool</tt><a class="headerlink" href="#PySQLPool.PySQLPool.__pool" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="PySQLPool.PySQLPool.maxActiveConnections">
+<tt class="descname">maxActiveConnections</tt><a class="headerlink" href="#PySQLPool.PySQLPool.maxActiveConnections" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="PySQLPool.PySQLPool.maxActivePerConnection">
+<tt class="descname">maxActivePerConnection</tt><a class="headerlink" href="#PySQLPool.PySQLPool.maxActivePerConnection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="PySQLPool.PySQLPool.Terminate">
+<tt class="descname">Terminate</tt><big>(</big><big>)</big><a class="headerlink" href="#PySQLPool.PySQLPool.Terminate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="PySQLPool.PySQLPool.Cleanup">
+<tt class="descname">Cleanup</tt><big>(</big><big>)</big><a class="headerlink" href="#PySQLPool.PySQLPool.Cleanup" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="PySQLPool.PySQLPool.Commit">
+<tt class="descname">Commit</tt><big>(</big><big>)</big><a class="headerlink" href="#PySQLPool.PySQLPool.Commit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="PySQLPool.PySQLPool.GetConnection">
+<tt class="descname">GetConnection</tt><big>(</big><em>PySQLConnectionObj</em><big>)</big><a class="headerlink" href="#PySQLPool.PySQLPool.GetConnection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="PySQLPool.PySQLPool.returnConnection">
+<tt class="descname">returnConnection</tt><big>(</big><em>connObj</em><big>)</big><a class="headerlink" href="#PySQLPool.PySQLPool.returnConnection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="pysqlpool-pysqlconnection">
+<h2><tt class="xref docutils literal"><span class="pre">PySQLPool.PySQLConnection</span></tt><a class="headerlink" href="#pysqlpool-pysqlconnection" title="Permalink to this headline">¶</a></h2>
+<dl class="attribute">
+<dt id="PySQLPool.connection_timeout">
+<tt class="descclassname">PySQLPool.</tt><tt class="descname">connection_timeout</tt><a class="headerlink" href="#PySQLPool.connection_timeout" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>A <cite>datetime.timedelta</cite> representing your default MySQL connection_timeout. This is used
+to improve performance with checking to see if connections are valid and reconnecting if needed. Each
+connection instance maintains a timestamp of its last activity. That is updated for every query or test.
+The connection is auto tested for every new instance of a PySQLQuery created on its initial fetching
+of a connection.</p>
+<dl class="class">
+<dt id="PySQLPool.PySQLConnection">
+<em class="property">class </em><tt class="descclassname">PySQLPool.</tt><tt class="descname">PySQLConnection</tt><big>(</big><span class="optional">[</span><em>host</em><span class="optional">[</span>, <em>user</em><span class="optional">[</span>, <em>passwd</em><span class="optional">[</span>, <em>db</em><span class="optional">[</span>, <em>port</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span>, <em>**kargs</em><big>)</big><a class="headerlink" href="#PySQLPool.PySQLConnection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Command Pattern Object to store connection information for use in PySQLPool</p>
+<dl class="docutils">
+<dt>Supported kargs are:</dt>
+<dd><ul class="first last simple">
+<li><strong>host</strong> - string, host to connect</li>
+<li><strong>user,username</strong> - string, user to connect as</li>
+<li><strong>passwd,password</strong> - string, password to use</li>
+<li><strong>db,schema</strong> - string, database to use</li>
+<li><strong>port</strong> - integer, TCP/IP port to connect to</li>
+<li><strong>unix_socket</strong> - string, location of unix_socket to use</li>
+<li><strong>conv</strong> - conversion dictionary, see MySQLdb.converters</li>
+<li><strong>connect_timeout</strong> - number of seconds to wait before the connection attempt fails.</li>
+<li><strong>compress</strong> - if set, compression is enabled</li>
+<li><strong>named_pipe</strong> - if set, a named pipe is used to connect (Windows only)</li>
+<li><strong>init_command</strong> - command which is run once the connection is created</li>
+<li><strong>read_default_file</strong> - file from which default client values are read</li>
+<li><strong>read_default_group</strong> - configuration group to use from the default file</li>
+<li><strong>cursorclass</strong> - class object, used to create cursors (keyword only)</li>
+<li><strong>use_unicode</strong> - If True, text-like columns are returned as unicode objects using the
+connection&#8217;s character set. Otherwise, text-like columns are returned as strings.
+columns are returned as normal strings. Unicode objects will always be encoded to
+the connection&#8217;s character set regardless of this setting.</li>
+<li><strong>charset</strong> - If supplied, the connection character set will be changed to this character set (MySQL-4.1 and newer).
+This implies use_unicode=True</li>
+<li><strong>sql_mode</strong> - If supplied, the session SQL mode will be changed to this setting (MySQL-4.1 and newer).
+For more details and legal values, see the MySQL documentation.</li>
+<li><strong>client_flag</strong> - integer, flags to use or 0 (see MySQL docs or constants/CLIENTS.py)</li>
+<li><strong>ssl</strong> - dictionary or mapping, contains SSL connection parameters; see the MySQL documentation for more details (mysql_ssl_set()).
+If this is set, and the client does not support SSL, NotSupportedError will be raised.</li>
+<li><strong>local_inifile</strong> - integer, non-zero enables LOAD LOCAL INFILE; zero disables</li>
+</ul>
+</dd>
+</dl>
+<p>Note: There are a number of undocumented, non-standard methods.
+See the documentation for the MySQL C API for some hints on what they do.</p>
+<dl class="attribute">
+<dt id="PySQLPool.PySQLConnection.info">
+<tt class="descname">info</tt><a class="headerlink" href="#PySQLPool.PySQLConnection.info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Dictionary containing the connection info to be passed off to the MySQLdb layer</p>
+<dl class="attribute">
+<dt id="PySQLPool.PySQLConnection.key">
+<tt class="descname">key</tt><a class="headerlink" href="#PySQLPool.PySQLConnection.key" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>An auto generated md5 checksum to represent your connection in the pool. This is generated off of the
+username, password, host, and db/schema.</p>
+<dl class="method">
+<dt id="PySQLPool.PySQLConnection.__getattr__">
+<tt class="descname">__getattr__</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#PySQLPool.PySQLConnection.__getattr__" title="Permalink to this definition">¶</a></dt>
+<dd>Accessor to <a title="PySQLPool.PySQLConnection.info" class="reference internal" href="#PySQLPool.PySQLConnection.info"><tt class="xref docutils literal"><span class="pre">info</span></tt></a></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="PySQLPool.PySQLConnectionManager">
+<em class="property">class </em><tt class="descclassname">PySQLPool.</tt><tt class="descname">PySQLConnectionManager</tt><a class="headerlink" href="#PySQLPool.PySQLConnectionManager" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="PySQLPool.PySQLConnectionManager.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>PySQLConnectionObj</em><big>)</big><a class="headerlink" href="#PySQLPool.PySQLConnectionManager.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="PySQLPool.PySQLConnectionManager.updateCheckTime">
+<tt class="descname">updateCheckTime</tt><big>(</big><big>)</big><a class="headerlink" href="#PySQLPool.PySQLConnectionManager.updateCheckTime" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="PySQLPool.PySQLConnectionManager.Connect">
+<tt class="descname">Connect</tt><big>(</big><big>)</big><a class="headerlink" href="#PySQLPool.PySQLConnectionManager.Connect" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="PySQLPool.PySQLConnectionManager.ReConnect">
+<tt class="descname">ReConnect</tt><big>(</big><big>)</big><a class="headerlink" href="#PySQLPool.PySQLConnectionManager.ReConnect" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="PySQLPool.PySQLConnectionManager.TestConnection">
+<tt class="descname">TestConnection</tt><big>(</big><em>forceCheck = False</em><big>)</big><a class="headerlink" href="#PySQLPool.PySQLConnectionManager.TestConnection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="PySQLPool.PySQLConnectionManager.Commit">
+<tt class="descname">Commit</tt><big>(</big><big>)</big><a class="headerlink" href="#PySQLPool.PySQLConnectionManager.Commit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="PySQLPool.PySQLConnectionManager.Close">
+<tt class="descname">Close</tt><big>(</big><big>)</big><a class="headerlink" href="#PySQLPool.PySQLConnectionManager.Close" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">PySQLPool Object Reference</a><ul>
+<li><a class="reference external" href="#pysqlpool"><tt class="docutils literal"><span class="pre">PySQLPool</span></tt></a></li>
+<li><a class="reference external" href="#pysqlpool-pysqlquery"><tt class="docutils literal"><span class="pre">PySQLPool.PySQLQuery</span></tt></a></li>
+<li><a class="reference external" href="#pysqlpool-pysqlpool"><tt class="docutils literal"><span class="pre">PySQLPool.PySQLPool</span></tt></a></li>
+<li><a class="reference external" href="#pysqlpool-pysqlconnection"><tt class="docutils literal"><span class="pre">PySQLPool.PySQLConnection</span></tt></a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="tutorial.html"
+                                  title="previous chapter">Getting Started with PySQLPool</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="faqs.html"
+                                  title="next chapter">FAQs</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/reference.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="faqs.html" title="FAQs"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="tutorial.html" title="Getting Started with PySQLPool"
+             >previous</a> |</li>
+        <li><a href="index.html">PySQLPool v0.3.6 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, Nick Verbeck.
+      Last updated on Mar 14, 2011.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.6.
+    </div>
+  </body>
+</html>

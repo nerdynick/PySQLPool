@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>FAQs &mdash; PySQLPool v0.3.6 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.3.6',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="PySQLPool v0.3.6 documentation" href="index.html" />
+    <link rel="prev" title="PySQLPool Object Reference" href="reference.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="reference.html" title="PySQLPool Object Reference"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">PySQLPool v0.3.6 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="faqs">
+<h1>FAQs<a class="headerlink" href="#faqs" title="Permalink to this headline">¶</a></h1>
+<p>In an attempt to help answer some questions preemptively. A FAQ page has been create along
+side the with the docs. Lets hope this helps.</p>
+<div class="section" id="how-do-i-enable-debugging">
+<h2>How do I enable debugging?<a class="headerlink" href="#how-do-i-enable-debugging" title="Permalink to this headline">¶</a></h2>
+<p>Currently debugging is very limited, but we do contain a simple debugging capability. You can
+enable debugging by assigning PySQLQuery.logging_path to a string value of a file to write the
+debugging output to. This will cause every query executed and any errors to be written to the
+supplied file.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">PySQLPool</span>
+
+<span class="n">PySQLPool</span><span class="o">.</span><span class="n">PySQLQuery</span><span class="o">.</span><span class="n">logging_path</span> <span class="o">=</span> <span class="s">&#39;/path/to/file.txt&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="what-type-of-exception-are-raised">
+<h2>What type of exception are raised?<a class="headerlink" href="#what-type-of-exception-are-raised" title="Permalink to this headline">¶</a></h2>
+<p>At this time PySQLPool does not wrap the exceptions that come out of MySQLdb. So any and all errors
+thrown from any of your queries and/or other actions by MySQLdb will be of its types. Of which the base is
+MySQLdb.Error. To find out what error you have caused. MySQLdb.Error contains a two-element tuple called args.
+The 1st value will contain the MySQL error number, and the second will contain the error message.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">try</span><span class="p">:</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">PySQLPool</span><span class="o">.</span><span class="n">getNewConnection</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s">&#39;root&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s">&#39;123456&#39;</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="s">&#39;mydb&#39;</span><span class="p">)</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="n">PySQLPool</span><span class="o">.</span><span class="n">getNewQuery</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+    <span class="n">query</span><span class="o">.</span><span class="n">Query</span><span class="p">(</span><span class="s">&#39;select * from table&#39;</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">MySQLdb</span><span class="o">.</span><span class="n">Error</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+    <span class="k">print</span> <span class="s">&quot;Error </span><span class="si">%d</span><span class="s">: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">FAQs</a><ul>
+<li><a class="reference external" href="#how-do-i-enable-debugging">How do I enable debugging?</a></li>
+<li><a class="reference external" href="#what-type-of-exception-are-raised">What type of exception are raised?</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="reference.html"
+                                  title="previous chapter">PySQLPool Object Reference</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/faqs.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="reference.html" title="PySQLPool Object Reference"
+             >previous</a> |</li>
+        <li><a href="index.html">PySQLPool v0.3.6 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, Nick Verbeck.
+      Last updated on Mar 14, 2011.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.6.
+    </div>
+  </body>
+</html>

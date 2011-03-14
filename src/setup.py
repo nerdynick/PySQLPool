@@ -5,12 +5,12 @@ import PySQLPool
 
 setup(name='PySQLPool',
       version=PySQLPool.__version__,
+      author=PySQLPool.__author__,
+      author_email=PySQLPool.__author_email__,
       license='LGPL V3',
       platforms=['ALL'],
       description='Python MySQL Connection Pooling and MySQL Query management',
-      author=PySQLPool.__author__,
-      author_email=PySQLPool.__author_email__,
-      url='http://code.google.com/p/pysqlpool/',
+      url='https://github.com/nerdynick/PySQLPool/',
       download_url="http://code.google.com/p/pysqlpool/downloads/list",
       classifiers = [
                      'Topic :: Software Development :: Libraries :: Python Modules',
@@ -20,5 +20,5 @@ setup(name='PySQLPool',
                      'Development Status :: 5 - Production/Stable'],
       requires=['MySQL-python'],
       provides=['pysqlpool','PySQLPool'],
-      packages=['PySQLPool'],
+      packages=['PySQLPool']
      )
