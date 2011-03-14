@@ -28,11 +28,9 @@ Windows::
 Documentation
 ====================
 
-Documentation can be read locally at doc/index.rst or via the web at 
-http://packages.python.org/PySQLPool
-
-You can also generate your own html docs via the make file in doc/. 
-This will produce the same docs as hosted on the website.
+The documentation for PySQLPool is constructed using Sphinx. You can view the raw text files in
+doc/*, or if you wish to view an html version in doc/html/* or via the web at 
+http://packages.python.org/PySQLPool/
 
 =======
 License
@@ -54,10 +52,30 @@ Links
 
 Homepages: 
 
-- https://github.com/nerdynick/PySQLPool 
-- http://code.google.com/p/pysqlpool/
-- https://launchpad.net/pysqlpool/
+- https://github.com/nerdynick/PySQLPool (Primary Site)
+- http://code.google.com/p/pysqlpool/ (Legacy Site)
+- https://launchpad.net/pysqlpool/ (Soon to be Legacy Site)
           
 Documentation:
  
 - http://packages.python.org/PySQLPool/
+
+
+===========
+Development
+===========
+
+Contributing
+============
+
+If you would like to contribute back to PySQLPool. Fill free to fork a branch and ask for a pull, or just submit me a patch. 
+Eather via 'git format-patch' if you want true tracked credit or just a normal diff patch.
+
+
+Basic Folder Structure
+======================
+
+/doc           - RST based documentation
+/src           - Base Source Code
+/src/PySQLPool - Actual Source Code
+/test          - Unittest via PyUnit
