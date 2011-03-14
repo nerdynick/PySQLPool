@@ -103,11 +103,29 @@ class PySQLConnectionManager(object):
 		
 		self.connectionInfo = PySQLConnectionObj
 		self.connection = None
-		self.lock = Semaphore()
+		
+		#Lock management
+		self._lock = Semaphore()
+		self._locked = False
+		
 		self.activeConnections = 0
 		self.query = None
 		self.lastConnectionCheck = None
 		self.Connect()
+		
+	def lock(self):
+		self._lock.acquire()
+		self._locked = True
+		
+	def release(self):
+		self._lock.release()
+		self._locked = False
+		
+	def is_locked(self):
+		return self._locked
+	
+	def getCursor(self):
+		return self.conn.connection.cursor(MySQLdb.cursors.DictCursor)
 		
 	def updateCheckTime(self):
 		self.lastConnectionCheck = datetime.datetime.now()

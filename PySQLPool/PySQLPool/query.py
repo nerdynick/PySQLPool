@@ -5,10 +5,8 @@
 
 import time
 import MySQLdb
-from PySQLPool import PySQLPool
-import os.path
-
-logging_path = None
+from pool import PySQLPool
+import log
 
 class PySQLQuery(object):
 	"""
@@ -33,10 +31,10 @@ class PySQLQuery(object):
 		"""
 		self.Pool = PySQLPool() #TODO: Remove the use of this
 		self.connInfo = PySQLConnectionObj
-		self.commitOnEnd = commitOnEnd
 		self.record = {}
 		self.rowcount = 0
 		self.affectedRows = None
+		#The Real Connection to the DB
 		self.conn = None
 		self.lastError = None
 		self.lastInsertID = None
@@ -58,6 +56,7 @@ class PySQLQuery(object):
 		@since: 5/21/2010
 		"""
 		self.Query('START TRANSACTION')
+		log.logger.info('Starting Transaction')
 	
 	def __exit__(self, exc_type, exc_value, traceback):
 		"""
@@ -67,12 +66,10 @@ class PySQLQuery(object):
 		"""
 		if exc_type is None:
 			self.Query('COMMIT')
-		
-	def Query(self, query, args=None):
-		"""
-		@deprecated: Depracating in favor of proper code standards.
-		"""
-		return self.query(query, args)
+			log.logger.info('Commiting Transaction')
+		else:
+			self.Query('ROLLBACK')
+			log.logger.info('Rolling Back Transaction')
 		
 	#TODO: In the future lets decorate all our query calls with a connection fetching and releasing handler. Help to centralize all this logic for use in transactions in the future.
 	def query(self, query, args=None):
@@ -88,56 +85,26 @@ class PySQLQuery(object):
 		self.lastError = None
 		cursor = None
 		
-		if logging_path is not None:
-			try:
-				file = os.path.join(logging_path, 'PySQLPool.Query.log')
-				fp = open(file, 'a+')
-				fp.write("=== Query ===\n")
-				fp.write(str(query)+"\n")
-				fp.write("=== Args ===\n")
-				fp.write(str(args)+"\n")
-				fp.close()
-			except Exception, e:
-				pass
-		
 		try:
 			try:
 				self._GetConnection()
 				
+				log.logger.debug('Running query "%s" with args "%s"', query, args)
 				self.conn.query = query
 				
 				#Execute query and store results
-				cursor = self.conn.connection.cursor(MySQLdb.cursors.DictCursor)
+				cursor = self.conn.getCursor()
 				self.affectedRows = cursor.execute(query, args)
 				self.lastInsertID = self.conn.connection.insert_id()
 				self.rowcount = cursor.rowcount
 				
+				log.logger.debug('Query Resulted in %s affected rows, %s rows returned, %s last insert id', self.affectedRows, self.lastInsertID, self.rowcount)
+				
 				self.record = cursor.fetchall()
 				self.conn.updateCheckTime()
-				
-				if logging_path is not None:
-					try:
-						file = os.path.join(logging_path, 'PySQLPool.Query.log')
-						fp = open(file, 'a+')
-						fp.write("=== Affected Rows ===\n")
-						fp.write(str(self.affectedRows)+"\n")
-						fp.write("=== Row Count ===\n")
-						fp.write(str(self.rowcount)+"\n")
-						fp.close()
-					except Exception, e:
-						pass
 			except Exception, e:
 				self.lastError = e
 				self.affectedRows = None
-				if logging_path is not None:
-					try:
-						file = os.path.join(logging_path, 'PySQLPool.Query.log')
-						fp = open(file, 'a+')
-						fp.write("=== Error ===\n")
-						fp.write(str(e.message)+"\n")
-						fp.close()
-					except Exception, e:
-						pass
 		finally:
 			if cursor is not None:
 				cursor.close()
@@ -146,13 +113,7 @@ class PySQLQuery(object):
 				raise self.lastError
 			else:
 				return self.affectedRows
-	execute = query
-	
-	def QueryOne(self, query, args=None):
-		"""
-		@deprecated: Depracating in favor of proper code standards.
-		"""
-		return self.queryOne(query, args)
+	execute = Query = query
 	
 	def queryOne(self, query, args=None):
 		"""
@@ -173,7 +134,7 @@ class PySQLQuery(object):
 				self._GetConnection()
 				self.conn.query = query
 				#Execute query
-				cursor = self.conn.connection.cursor(MySQLdb.cursors.DictCursor)
+				cursor = self.conn.getCursor()
 				self.affectedRows = cursor.execute(query, args)
 				self.conn.updateCheckTime()
 				while 1:
@@ -196,7 +157,7 @@ class PySQLQuery(object):
 				raise self.lastError
 			else:
 				raise StopIteration
-	executeOne = queryOne
+	executeOne = QueryOne = queryOne
 			
 	def queryMany(self, query, args):
 		"""
@@ -219,7 +180,7 @@ class PySQLQuery(object):
 				self._GetConnection()
 				self.conn.query = query
 				#Execute query and store results
-				cursor = self.conn.connection.cursor(MySQLdb.cursors.DictCursor)
+				cursor = self.conn.getCursor()
 				self.affectedRows = cursor.executemany(query, args)
 				self.conn.updateCheckTime()
 			except Exception, e:
@@ -251,7 +212,7 @@ class PySQLQuery(object):
 			try:
 				self._GetConnection()
 				#Execute query and store results
-				cursor = self.conn.connection.cursor(MySQLdb.cursors.DictCursor)
+				cursor = self.conn.getCursor()
 				for query in queries:
 					self.conn.query = query
 					if query.__class__ == [].__class__:

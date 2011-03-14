@@ -1,8 +1,17 @@
-__version__ = '0.3.7'
-__author__ = 'Nick Verbeck <nick@skeletaldesign.com>'
+__version__ = '0.4'
+__author__ = 'Nick Verbeck'
+__author_email__ = 'nerdynick@gmail.com'
 
-import PySQLConnection
+import logging
+logger = None
+log_level = logging.INFO
 
+#We rename these for legacy support. Will phase out with 1.0 most likely
+import connection as PySQLConnection
+import query as PySQLQuery
+import pool as PySQLPool
+
+#Connection short cuts
 def getNewConnection(*args, **kargs):
 	"""
 	Quickly Create a new PySQLConnection class
@@ -33,7 +42,7 @@ def getNewConnection(*args, **kargs):
 			kargs['commitOnEnd'] = args[5]
 	return PySQLConnection.PySQLConnection(*args, **kargs)
 
-import PySQLQuery
+#Query short cuts
 def getNewQuery(connection = None, commitOnEnd=False, *args, **kargs):
 	"""
 	Create a new PySQLQuery Class
@@ -51,7 +60,8 @@ def getNewQuery(connection = None, commitOnEnd=False, *args, **kargs):
 		#-Chandler Prall
 		return PySQLQuery.PySQLQuery(connection, commitOnEnd = commitOnEnd)
 
-import PySQLPool
+
+#Pool short cuts
 def getNewPool():
 	"""
 	Create a new PySQLPool

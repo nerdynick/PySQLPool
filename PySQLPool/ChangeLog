@@ -13,3 +13,10 @@
 	* Added returns of affect rows to queryMulti and queryMany
 	* Added alias's for executeMulti, executeMany, execute, executeOne matching queryMulti, queryMany, query, queryOne respectfully
 	* Added support for use of with. ie Content Management. Submitted by Denis Malinovsky
+	
+0.4
+	* Renaming of modules PySQLQuery to query, PySQLConnection to connection, and PySQLPool to pool. If you are importing these directly you will need to change your code.
+	  Legacy support does exist from just `import PySQLPool` and accessing them via PySQLPool.PySQLPool.
+	* Improved transaction support
+	* New logging system. Legacy version is not longer supported in anyway. Uses python's logging module.
+	* Unittests. Enough said.
