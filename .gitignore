@@ -1,3 +1,6 @@
 *.svn*
 .project
 .pydevproject
+*.pyc
+PySQLPool/dist/*
+PySQLPool/build/*
