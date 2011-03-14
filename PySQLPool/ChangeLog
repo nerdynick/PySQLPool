@@ -1,0 +1,15 @@
+0.3.6
+	* Started Sphinx/RST style Documentation
+	* Added LICENSE File
+	* Added README File
+	* Updated Email in setup.py
+	* Added favicon to docs
+	* Added ChangeLog
+	* Fixes to Thread Locking Contention
+	* Improved Hash Generation for Pool Key
+	* Cleaned up Import Statements
+	* Starts to future improvements to thread based MySQL transactions
+	* Improved Python2.4 Support
+	* Added returns of affect rows to queryMulti and queryMany
+	* Added alias's for executeMulti, executeMany, execute, executeOne matching queryMulti, queryMany, query, queryOne respectfully
+	* Added support for use of with. ie Content Management. Submitted by Denis Malinovsky

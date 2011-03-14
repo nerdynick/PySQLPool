@@ -1,0 +1,32 @@
+Unit Test Suit for PySQLPool
+Started 6/23/2009
+
+===========================
+       Sample Data
+===========================
+All unit test provided use the Employee Sample data provided by MySQL.
+Make sure that the data is imported using InnoDB. This allows for 
+transaction based tests.
+
+To get a copy of this data visit 1 of the following URLs:
+	http://launchpad.net/test-db
+	http://dev.mysql.com/doc/employee/en/employee.html
+	http://dev.mysql.com/doc/#sampledb
+	
+You will also need to create a user with the following info
+	U: unittest
+	P: zEzaj37u
+	This user also needs full permissions to the, what should now be created, employees schema
+	This use can be created for localhost access only or remote access. 
+	Just make sure that the user can connect to this db from the location you wish to run the tests.
+
+
+===========================
+        The Tests
+===========================
+
+Each test module contains both a suit() function as well as a default run method.
+To allow you to run each test suit from the interactive shell as well as executing the file.
+
+The __init__.py module also contains a test suit to run all unit tests. This can be executed from 
+the interactive shell as well a executed. 
