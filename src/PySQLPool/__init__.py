@@ -7,9 +7,9 @@ logger = None
 log_level = logging.INFO
 
 #We rename these for legacy support. Will phase out with 1.0 most likely
-import connection as PySQLConnection
-import query as PySQLQuery
-import pool as PySQLPool
+import connection
+import query
+import pool
 
 #Connection short cuts
 def getNewConnection(*args, **kargs):
@@ -40,7 +40,7 @@ def getNewConnection(*args, **kargs):
 			kargs['port'] = args[4]
 		if len(args) >= 6:
 			kargs['commitOnEnd'] = args[5]
-	return PySQLConnection.PySQLConnection(*args, **kargs)
+	return connection.PySQLConnection(*args, **kargs)
 
 #Query short cuts
 def getNewQuery(connection = None, commitOnEnd=False, *args, **kargs):
@@ -54,11 +54,11 @@ def getNewQuery(connection = None, commitOnEnd=False, *args, **kargs):
 	@updated: 7/19/2008 - Added commitOnEnd support
 	"""
 	if connection is None:
-		return PySQLQuery.PySQLQuery(getNewConnection(*args, **kargs), commitOnEnd = commitOnEnd)
+		return query.PySQLQuery(getNewConnection(*args, **kargs), commitOnEnd = commitOnEnd)
 	else:
 		#Updated 7/24/08 to include commitOnEnd here
 		#-Chandler Prall
-		return PySQLQuery.PySQLQuery(connection, commitOnEnd = commitOnEnd)
+		return query.PySQLQuery(connection, commitOnEnd = commitOnEnd)
 
 
 #Pool short cuts
@@ -69,7 +69,7 @@ def getNewPool():
 	@author: Nick Verbeck
 	@since: 5/12/2008
 	"""
-	return PySQLPool.PySQLPool()
+	return pool.PySQLPool()
 
 def terminatePool():
 	"""
@@ -78,7 +78,7 @@ def terminatePool():
 	@author: Nick Verbeck
 	@since: 5/12/2008
 	"""
-	PySQLPool.PySQLPool().Terminate()
+	pool.PySQLPool().Terminate()
 	
 def commitPool():
 	"""
@@ -87,7 +87,7 @@ def commitPool():
 	@author: Nick Verbeck
 	@since: 9/12/2008
 	"""
-	PySQLPool.PySQLPool().Commit()	
+	pool.PySQLPool().Commit()	
 	
 def cleanupPool():
 	"""
@@ -96,4 +96,4 @@ def cleanupPool():
 	@author: Nick Verbeck
 	@since: 9/12/2008
 	"""
-	PySQLPool.PySQLPool().Cleanup()	
+	pool.PySQLPool().Cleanup()	

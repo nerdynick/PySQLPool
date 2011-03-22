@@ -92,16 +92,16 @@ class PySQLConnectionManager(object):
 	@since: 5/12/2008
 	@version: 0.1
 	"""
-	def __init__(self, PySQLConnectionObj):
+	def __init__(self, connectionInfo):
 		"""
 		Constructor for PySQLConnectionManager
 		
-		@param PySQLConnectionObj: PySQLConnection Object representing your connection string
+		@param connectionInfo: PySQLConnection Object representing your connection string
 		@author: Nick Verbeck
 		@since: 5/12/2008
 		"""
 		
-		self.connectionInfo = PySQLConnectionObj
+		self.connectionInfo = connectionInfo
 		self.connection = None
 		
 		#Lock management
@@ -111,15 +111,14 @@ class PySQLConnectionManager(object):
 		self.activeConnections = 0
 		self.query = None
 		self.lastConnectionCheck = None
-		self.Connect()
 		
-	def lock(self):
-		self._lock.acquire()
+	def lock(self, block=True):
 		self._locked = True
+		return self._lock.acquire(block)
 		
 	def release(self):
-		self._lock.release()
 		self._locked = False
+		self._lock.release()
 		
 	def is_locked(self):
 		return self._locked

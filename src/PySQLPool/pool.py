@@ -166,12 +166,14 @@ class PySQLPool(object):
 					if connKey <= self.maxActiveConnections:
 						self.conn[key][connKey] = PySQLConnectionManager(PySQLConnectionObj)
 						connection = self.conn[key][connKey]
+						connection.Connect()
 						connection.lock.acquire()
 			#Create new Connection Pool Set
 			else:
 				self.conn[key] = {}
 				self.conn[key][0] = PySQLConnectionManager(PySQLConnectionObj)
 				connection = self.conn[key][0]
+				connection.Connect()
 				connection.lock.acquire()
 
 			if connection is not None:	
