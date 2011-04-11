@@ -11,7 +11,7 @@ try:
 except Exception, e:
 	from md5 import md5
 
-class PySQLConnection(object):
+class Connection(object):
 	"""
 	Command Pattern Object to store connection information for use in PySQLPool
 	
@@ -22,7 +22,7 @@ class PySQLConnection(object):
 	
 	def __init__(self, *args, **kargs):
 		"""
-		Constructor for the PySQLConnection class
+		Constructor for the Connection class
 		@param commitOnEnd: Default False, When query is complete do you wish to auto commit. This is a always on for this connection
 		@author: Nick Verbeck
 		@since: 5/12/2008
@@ -82,7 +82,7 @@ class PySQLConnection(object):
 
 connection_timeout = datetime.timedelta(seconds=20)
 
-class PySQLConnectionManager(object):
+class ConnectionManager(object):
 	"""
 	Physical Connection manager
 	
@@ -94,9 +94,9 @@ class PySQLConnectionManager(object):
 	"""
 	def __init__(self, connectionInfo):
 		"""
-		Constructor for PySQLConnectionManager
+		Constructor for ConnectionManager
 		
-		@param connectionInfo: PySQLConnection Object representing your connection string
+		@param connectionInfo: Connection Object representing your connection string
 		@author: Nick Verbeck
 		@since: 5/12/2008
 		"""
@@ -124,9 +124,12 @@ class PySQLConnectionManager(object):
 		return self._locked
 	
 	def getCursor(self):
-		return self.conn.connection.cursor(MySQLdb.cursors.DictCursor)
+		if self.connection is None:
+			self.Connect()
+			
+		return self.connection.cursor(MySQLdb.cursors.DictCursor)
 		
-	def updateCheckTime(self):
+	def _updateCheckTime(self):
 		self.lastConnectionCheck = datetime.datetime.now()
 
 	def Connect(self):
@@ -137,7 +140,14 @@ class PySQLConnectionManager(object):
 		@since: 5/12/2008
 		"""
 		self.connection = MySQLdb.connect(*[], **self.connectionInfo.info)
-		self.updateCheckTime()
+		if self.connectionInfo.commitOnEnd is True:
+			self.connection.autocommit()
+		self._updateCheckTime()
+		
+	def autoCommit(self, autocommit):
+		self.connectionInfo.commitOnEnd = autocommit
+		if autocommit is True and self.connection is not None:
+			self.connection.autocommit()
 		
 	def ReConnect(self):
 		"""
@@ -159,30 +169,52 @@ class PySQLConnectionManager(object):
 		"""
 		if self.connection is None:
 			return False
-		else:
-			if forceCheck is True or (datetime.datetime.now() - self.lastConnectionCheck) >= connection_timeout:
-				try:
-					cursor = self.connection.cursor(MySQLdb.cursors.DictCursor)
-					cursor.execute('select current_user')
-					self.updateCheckTime()
-					return True
-				except Exception, e:
-					self.connection.close()
-					self.connection = None
-					return False
-			else:
+		elif forceCheck is True or (datetime.datetime.now() - self.lastConnectionCheck) >= connection_timeout:
+			try:
+				#TODO: Find a better way to test if connection is open
+				cursor = self.connection.cursor(MySQLdb.cursors.DictCursor)
+				cursor.execute('select current_user')
+				self._updateCheckTime()
 				return True
+			except Exception, e:
+				self.connection.close()
+				self.connection = None
+				return False
+		else:
+			return True
 			
-	def Commit(self):
+	def commit(self):
 		"""
-		Commit MySQL Transaction to database
+		Commit MySQL Transaction to database.
+		MySQLDB: If the database and the tables support transactions, 
+		this commits the current transaction; otherwise 
+		this method successfully does nothing.
 		
 		@author: Nick Verbeck
 		@since: 5/12/2008
 		"""
 		try:
-			self.connection.commit()
-			self.updateCheckTime()
+			if self.connection is not None:
+				self.connection.commit()
+				self._updateCheckTime()
+		except Exception, e:
+			pass
+	Commit = commit
+			
+	def rollback(self):
+		"""
+		Rollback MySQL Transaction to database.
+		MySQLDB: If the database and tables support transactions, this rolls 
+		back (cancels) the current transaction; otherwise a 
+		NotSupportedError is raised.
+		
+		@author: Nick Verbeck
+		@since: 5/12/2008
+		"""
+		try:
+			if self.connection is not None:
+				self.connection.rollback()
+				self._updateCheckTime()
 		except Exception, e:
 			pass
 	

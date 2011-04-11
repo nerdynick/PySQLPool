@@ -6,6 +6,10 @@ Created on Jun 23, 2009
 import unittest
 import PySQLPool
 from mock import Mock
+try:
+	from hashlib import md5 
+except Exception, e:
+	from md5 import md5
 
 def suite():
 	loader = unittest.TestLoader()
@@ -36,8 +40,8 @@ class Connection(unittest.TestCase):
 		Raw Connection Creation
 		"""
 		try:
-			connection = PySQLPool.connection.PySQLConnection(host=self.host, user=self.username, passwd=self.password, db=self.db)
-			self.assertTrue(isinstance(connection, PySQLPool.connection.PySQLConnection))
+			connection = PySQLPool.connection.Connection(host=self.host, user=self.username, passwd=self.password, db=self.db)
+			self.assertTrue(isinstance(connection, PySQLPool.connection.Connection))
 		except Exception, e:
 			self.fail("Failed to create connection with error: "+str(e))
 
@@ -46,8 +50,8 @@ class Connection(unittest.TestCase):
 		Raw Connection Creation using Kargs/Dict
 		"""
 		try:
-			connection = PySQLPool.connection.PySQLConnection(**self.connDict)
-			self.assertTrue(isinstance(connection, PySQLPool.connection.PySQLConnection))
+			connection = PySQLPool.connection.Connection(**self.connDict)
+			self.assertTrue(isinstance(connection, PySQLPool.connection.Connection))
 		except Exception, e:
 			self.fail("Failed to create connection with error: "+str(e))
 	
@@ -57,7 +61,7 @@ class Connection(unittest.TestCase):
 		"""
 		try:
 			connection = PySQLPool.getNewConnection(host=self.host, user=self.username, passwd=self.password, db=self.db)
-			self.assertTrue(isinstance(connection, PySQLPool.connection.PySQLConnection))
+			self.assertTrue(isinstance(connection, PySQLPool.connection.Connection))
 		except Exception, e:
 			self.fail("Failed to create connection with error: "+str(e))
 	
@@ -67,7 +71,57 @@ class Connection(unittest.TestCase):
 		"""
 		try:
 			connection = PySQLPool.getNewConnection(**self.connDict)
-			self.assertTrue(isinstance(connection, PySQLPool.connection.PySQLConnection))
+			self.assertTrue(isinstance(connection, PySQLPool.connection.Connection))
+		except Exception, e:
+			self.fail("Failed to create connection with error: "+str(e))
+	
+	def testAltConnectionOptions(self):
+		"""
+		Test Creating a connection with alternate arguments
+		"""
+		try:
+			conArgs = {
+				"username":"tUser",
+				"password":"tPass",
+				"schema":"tDB",
+			}
+			connection = PySQLPool.getNewConnection(**conArgs)
+			self.assertEqual(connection.info['user'], conArgs['username'], msg="Usernames don't match")
+			self.assertEqual(connection.info['passwd'], conArgs['password'], msg="Passwords don't match")
+			self.assertEqual(connection.info['db'], conArgs['schema'], msg="DBs don't match")
+		except Exception, e:
+			self.fail("Failed to create connection with error: "+str(e))
+	
+	def testHashKeyGen(self):
+		"""
+		Test Hash Key Generation
+		"""
+		try:
+			connection = PySQLPool.getNewConnection(**self.connDict)
+			hashStr = ''.join([str(x) for x in connection.info.values()])
+			key = md5(hashStr).hexdigest()
+			self.assertEqual(connection.key, key, msg="Hash Keys don't match")
+		except Exception, e:
+			self.fail("Failed to create connection with error: "+str(e))
+			
+	def testPossitionBasedConnectionArgs(self):
+		"""
+		Test Creating a connection with position based arguments
+		"""
+		try:
+			conArgs = [
+				"tHost",
+				"tUser",
+				"tPass",
+				"tDB",
+				3306
+			]
+			connection = PySQLPool.getNewConnection(*conArgs)
+			self.assertEqual(connection.info['host'], conArgs[0], msg="Hosts don't match")
+			self.assertEqual(connection.info['user'], conArgs[1], msg="Usernames don't match")
+			self.assertEqual(connection.info['passwd'], conArgs[2], msg="Passwords don't match")
+			self.assertEqual(connection.info['db'], conArgs[3], msg="DBs don't match")
+			self.assertEqual(connection.info['port'], conArgs[4], msg="Ports don't match")
 		except Exception, e:
 			self.fail("Failed to create connection with error: "+str(e))
 		
@@ -92,30 +146,34 @@ class ConnectionManager(unittest.TestCase):
 		Test the creation of a Connection Manager Object
 		"""
 		connectionInfo = PySQLPool.getNewConnection(**self.connDict)
-		self.assertTrue(isinstance(connectionInfo, PySQLPool.connection.PySQLConnection))
+		self.assertTrue(isinstance(connectionInfo, PySQLPool.connection.Connection))
 		
-		connection = PySQLPool.connection.PySQLConnectionManager(connectionInfo)
-		self.assertTrue(isinstance(connection, PySQLPool.connection.PySQLConnectionManager), msg="Not an instance")
+		connection = PySQLPool.connection.ConnectionManager(connectionInfo)
+		self.assertTrue(isinstance(connection, PySQLPool.connection.ConnectionManager), msg="Not an instance")
 		
 	def testConnectionManagerBasicLock(self):
 		"""
 		Test the locking of a Connection Manager Object
 		"""
 		connectionInfo = PySQLPool.getNewConnection(**self.connDict)
-		self.assertTrue(isinstance(connectionInfo, PySQLPool.connection.PySQLConnection))
+		self.assertTrue(isinstance(connectionInfo, PySQLPool.connection.Connection))
 		
-		connection = PySQLPool.connection.PySQLConnectionManager(connectionInfo)
-		self.assertTrue(isinstance(connection, PySQLPool.connection.PySQLConnectionManager), msg="Not an instance")
+		connection = PySQLPool.connection.ConnectionManager(connectionInfo)
+		self.assertTrue(isinstance(connection, PySQLPool.connection.ConnectionManager), msg="Not an instance")
 		
+		#Test raw boolean and func return
 		self.assertFalse(connection._locked, msg="Lock Bool not init false")
+		self.assertFalse(connection.is_locked(), msg="Lock Bool Func not init false")
 		
 		locked = connection.lock()
 		
 		self.assertTrue(connection._locked, msg="Lock Bool not true")
+		self.assertTrue(connection.is_locked(), msg="Lock Bool Func not true")
 		self.assertTrue(locked, msg="Return not true")
 		
 		connection.release()
 		self.assertFalse(connection._locked, msg="Lock Bool not false")
+		self.assertFalse(connection.is_locked(), msg="Lock Bool Func not false")
 
 if __name__ == "__main__":
 	unittest.main(defaultTest='suite')

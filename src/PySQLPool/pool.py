@@ -4,7 +4,7 @@
 @version: 0.2
 """
 from threading import Condition
-from connection import PySQLConnectionManager
+from connection import ConnectionManager
 
 class PySQLPool(object):
 	"""
@@ -164,14 +164,14 @@ class PySQLPool(object):
 					#Create a new Connection if Max Connections is not meet
 					connKey = len(self.conn[key])
 					if connKey <= self.maxActiveConnections:
-						self.conn[key][connKey] = PySQLConnectionManager(PySQLConnectionObj)
+						self.conn[key][connKey] = ConnectionManager(PySQLConnectionObj)
 						connection = self.conn[key][connKey]
 						connection.Connect()
 						connection.lock.acquire()
 			#Create new Connection Pool Set
 			else:
 				self.conn[key] = {}
-				self.conn[key][0] = PySQLConnectionManager(PySQLConnectionObj)
+				self.conn[key][0] = ConnectionManager(PySQLConnectionObj)
 				connection = self.conn[key][0]
 				connection.Connect()
 				connection.lock.acquire()

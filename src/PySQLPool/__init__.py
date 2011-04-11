@@ -40,14 +40,14 @@ def getNewConnection(*args, **kargs):
 			kargs['port'] = args[4]
 		if len(args) >= 6:
 			kargs['commitOnEnd'] = args[5]
-	return connection.PySQLConnection(*args, **kargs)
+	return connection.Connection(*args, **kargs)
 
 #Query short cuts
 def getNewQuery(connection = None, commitOnEnd=False, *args, **kargs):
 	"""
 	Create a new PySQLQuery Class
 	
-	@param PySQLConnectionObj: PySQLConnection Object representing your connection string
+	@param PySQLConnectionObj: Connection Object representing your connection string
 	@param commitOnEnd: Default False, When query is complete do you wish to auto commit. This is a one time auto commit
 	@author: Nick Verbeck
 	@since: 5/12/2008
