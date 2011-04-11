@@ -139,9 +139,12 @@ class ConnectionManager(object):
 		@author: Nick Verbeck
 		@since: 5/12/2008
 		"""
-		self.connection = MySQLdb.connect(*[], **self.connectionInfo.info)
+		if self.connection is None:
+			self.connection = MySQLdb.connect(*[], **self.connectionInfo.info)
+			
 		if self.connectionInfo.commitOnEnd is True:
 			self.connection.autocommit()
+			
 		self._updateCheckTime()
 		
 	def autoCommit(self, autocommit):

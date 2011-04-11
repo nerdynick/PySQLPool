@@ -6,7 +6,7 @@
 from threading import Condition
 from connection import ConnectionManager
 
-class PySQLPool(object):
+class Pool(object):
 	"""
 	MySQL Connection Pool Manager
 	
@@ -37,11 +37,11 @@ class PySQLPool(object):
 		self.__dict__ = self.__Pool
 		
 		#For 1st instantiation lets setup all our variables
-		if not self.__Pool.has_key('lock'):
-			self.__Pool['lock'] = Condition()
+		if not self.__dict__.has_key('lock'):
+			self.lock = Condition()
 			
-		if not self.__Pool.has_key('conn'):
-			self.conn = {}
+		if not self.__dict__.has_key('connections'):
+			self.connections = {}
 		
 	def Terminate(self):
 		"""
@@ -56,17 +56,17 @@ class PySQLPool(object):
 		
 		self.lock.acquire()
 		try:
-			for key in self.conn:
+			for bucket in self.connections.values():
 				try:
-					for conn in self.conn[key]:
-						self.conn[key][conn].lock.acquire()
+					for conn in bucket.values():
+						conn.lock.acquire()
 						try:
-							self.conn[key][conn].Close()
-						except Exception, e:
+							conn.Close()
+						except Exception:
+							#We may throw exceptions due to already closed connections
 							pass
-						self.conn[key][conn].lock.release()
-
-				except Exception, e:
+						conn.lock.release()
+				except Exception:
 					pass
 			self.conn = {}
 		finally:
@@ -83,17 +83,18 @@ class PySQLPool(object):
 		"""
 		self.lock.acquire()
 		try:
-			for key in self.conn:
+			for bucket in self.connections.values():
 				try:
-					for conn in self.conn[key]:
-						self.conn[key][conn].lock.acquire()
+					for conn in bucket.values():
+						conn.lock.acquire()
 						try:
-							self.conn[key][conn].TestConnection(forceCheck=True)
-							self.conn[key][conn].Commit()
-						except Exception, e:
+							open = conn.TestConnection(forceCheck=True)
+							if open is True:
+								conn.commit()
+						except Exception:
 							pass
-						self.conn[key][conn].lock.release()
-				except Exception, e:
+						conn.lock.release()
+				except Exception:
 					pass
 		finally:
 			self.lock.release()
@@ -107,21 +108,21 @@ class PySQLPool(object):
 		"""
 		self.lock.acquire()
 		try:
-			for key in self.conn:
+			for bucket in self.connections.values():
 				try:
-					for conn in self.conn[key]:
-						self.conn[key][conn].lock.acquire()
+					for conn in bucket.values():
+						conn.lock.acquire()
 						try:
-							self.conn[key][conn].Commit()
-						except Exception, e:
+							conn.commit()
+						except Exception:
 							pass
-						self.conn[key][conn].lock.release()
-				except Exception, e:
+						conn.lock.release()
+				except Exception:
 					pass
 		finally:
 			self.lock.release()
 		
-	def GetConnection(self, PySQLConnectionObj):
+	def GetConnection(self, ConnectionObj):
 		"""
 		Get a Open and active connection
 		
@@ -136,42 +137,45 @@ class PySQLPool(object):
 		#Lock the Connection Collection/Pool
 		self.lock.acquire()
 		
-		key = PySQLConnectionObj.key
+		key = ConnectionObj.key
 		
 		connection = None
 		
 		try:
-			if self.conn.has_key(key):
-				for i in self.conn[key]:
+			if self.connections.has_key(key):
+				for conn in self.connections[key].values():
 					#Grab an active connection if maxActivePerConnection is not meet
-					self.conn[key][i].lock.acquire()
+					#TODO: Fix lock contention here. If its locked due to transaction.
+					conn.lock.acquire()
 					try:
-						if self.conn[key][i].activeConnections < self.maxActivePerConnection:
-							if self.conn[key][i].TestConnection() is False:
-								self.conn[key][i].ReConnect()
-							connection = self.conn[key][i]
+						if conn.activeConnections < self.maxActivePerConnection:
+							if conn.TestConnection() is False:
+								conn.ReConnect()
+							connection = conn
 						#Force Release a connection if the query has been completed. 
 						#This solves a bug where some threaded apps would run faster then the pool could reallocate the connection. - Nick Verbeck
-						elif self.conn[key][i].query is None:
-							self.conn[key][i].count = 0
-							if self.conn[key][i].TestConnection() is False:
-								self.conn[key][i].ReConnect()
-							connection = self.conn[key][i]
-					except Exception, e:
-						self.conn[key][i].lock.release()
+						elif conn.query is None:
+							conn.count = 0
+							if conn.TestConnection() is False:
+								conn.ReConnect()
+							connection = conn
+					except Exception:
+						conn.lock.release()
 						raise
+					
 				if connection is None:
 					#Create a new Connection if Max Connections is not meet
-					connKey = len(self.conn[key])
+					connKey = len(self.connections[key])
 					if connKey <= self.maxActiveConnections:
-						self.conn[key][connKey] = ConnectionManager(PySQLConnectionObj)
-						connection = self.conn[key][connKey]
+						self.connections[key][connKey] = ConnectionManager(ConnectionObj)
+						connection = self.connections[key][connKey]
 						connection.Connect()
 						connection.lock.acquire()
+						
 			#Create new Connection Pool Set
 			else:
-				self.conn[key] = {}
-				self.conn[key][0] = ConnectionManager(PySQLConnectionObj)
+				self.connections[key] = {}
+				self.connections[key][0] = ConnectionManager(ConnectionObj)
 				connection = self.conn[key][0]
 				connection.Connect()
 				connection.lock.acquire()
@@ -179,7 +183,7 @@ class PySQLPool(object):
 			if connection is not None:	
 				connection.activeConnections += 1
 		finally:
-			self.__Pool['lock'].release()
+			self.lock.release()
 		return connection
 	
 	def returnConnection(self, connObj):
