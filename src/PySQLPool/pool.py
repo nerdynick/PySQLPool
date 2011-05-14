@@ -23,10 +23,6 @@ class Pool(object):
 	#Max Connections that can be opened among all connections
 	maxActiveConnections = 10
 	
-	#TODO: Remove all use of this limiter as the new locking for thread safe will not work with this.
-	#Max Active Query objects against 1 connection
-	maxActivePerConnection = 1
-	
 	def __init__(self):
 		"""
 		Constructor for PySQLPool
@@ -135,55 +131,54 @@ class Pool(object):
 		"""
 		
 		#Lock the Connection Collection/Pool
-		self.lock.acquire()
 		
 		key = ConnectionObj.key
 		
 		connection = None
 		
-		try:
-			if self.connections.has_key(key):
-				for conn in self.connections[key].values():
-					#Grab an active connection if maxActivePerConnection is not meet
-					#TODO: Fix lock contention here. If its locked due to transaction.
-					conn.lock.acquire()
+		if self.connections.has_key(key):
+			for conn in self.connections[key].values():
+				#Grab an active connection if maxActivePerConnection is not meet
+				#TODO: Implement a max usage per connection object
+				if not conn.is_locked():
+					conn.lock()
 					try:
-						if conn.activeConnections < self.maxActivePerConnection:
-							if conn.TestConnection() is False:
-								conn.ReConnect()
-							connection = conn
-						#Force Release a connection if the query has been completed. 
-						#This solves a bug where some threaded apps would run faster then the pool could reallocate the connection. - Nick Verbeck
-						elif conn.query is None:
-							conn.count = 0
-							if conn.TestConnection() is False:
-								conn.ReConnect()
-							connection = conn
+						if conn.TestConnection() is False:
+							conn.ReConnect()
+							
+						connection = conn
+						conn.release()
 					except Exception:
-						conn.lock.release()
+						conn.release()
 						raise
+				
+			if connection is None:
+				#Create a new Connection if Max Connections is not meet
+				connKey = len(self.connections[key])
+				if connKey <= self.maxActiveConnections:
+					self.lock.acquire()
+					self.connections[key][connKey] = self._createConnection(ConnectionObj)
+					self.lock.release()
+				else:
+					#TODO: We have maxed out a connection pool. Wait for a connection to become free
+					pass
 					
-				if connection is None:
-					#Create a new Connection if Max Connections is not meet
-					connKey = len(self.connections[key])
-					if connKey <= self.maxActiveConnections:
-						self.connections[key][connKey] = ConnectionManager(ConnectionObj)
-						connection = self.connections[key][connKey]
-						connection.Connect()
-						connection.lock.acquire()
-						
-			#Create new Connection Pool Set
-			else:
-				self.connections[key] = {}
-				self.connections[key][0] = ConnectionManager(ConnectionObj)
-				connection = self.conn[key][0]
-				connection.Connect()
-				connection.lock.acquire()
-
-			if connection is not None:	
-				connection.activeConnections += 1
-		finally:
+		#Create new Connection Pool Set
+		else:
+			self.lock.acquire()
+			self.connections[key] = {}
+			self.connections[key][0] = self._createConnection(ConnectionObj)
 			self.lock.release()
+
+		if connection is not None:
+			connection.activeConnections += 1
+			
+		return connection
+	
+	def _createConnection(self, info):
+		connection = ConnectionManager(info)
+		connection.Connect()
+		
 		return connection
 	
 	def returnConnection(self, connObj):
