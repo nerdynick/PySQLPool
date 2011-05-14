@@ -5,7 +5,7 @@
 
 import time
 import MySQLdb
-from pool import PySQLPool
+from pool import Pool
 import log
 
 class PySQLQuery(object):
@@ -29,7 +29,6 @@ class PySQLQuery(object):
 		@author: Nick Verbeck
 		@since: 5/12/2008
 		"""
-		self.Pool = PySQLPool() #TODO: Remove the use of this
 		self.connInfo = PySQLConnectionObj
 		self.record = {}
 		self.rowcount = 0
@@ -243,7 +242,7 @@ class PySQLQuery(object):
 		#we wait 1 second and try again.
 		#The Connection is returned locked to be thread safe
 		while self.conn is None:
-			self.conn = self.Pool.GetConnection(self.connInfo)
+			self.conn = Pool().GetConnection(self.connInfo)
 			if self.conn is not None:
 				break
 			else:
@@ -260,7 +259,7 @@ class PySQLQuery(object):
 			if self.connInfo.commitOnEnd is True or self.commitOnEnd is True:
 				self.conn.Commit()
 					
-			self.Pool.returnConnection(self.conn)
+			Pool().returnConnection(self.conn)
 			self.conn = None
 			
 	def escape_string(self, string):
