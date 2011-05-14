@@ -174,6 +174,12 @@ class ConnectionManager(unittest.TestCase):
 		connection.release()
 		self.assertFalse(connection._locked, msg="Lock Bool not false")
 		self.assertFalse(connection.is_locked(), msg="Lock Bool Func not false")
+		
+	def testConnectionManagerTransaction(self):
+		pass
+	
+	def testConnectionManagerTransRollback(self):
+		pass
 
 if __name__ == "__main__":
 	unittest.main(defaultTest='suite')
