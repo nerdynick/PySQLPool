@@ -17,6 +17,10 @@ Linux/Mac OS X::
     cd PySQLPool
     python setup.py build
     sudo python setup.py install
+    
+    - or -
+    
+    sudo easy_install PySQLPool
 
 Windows::
 
