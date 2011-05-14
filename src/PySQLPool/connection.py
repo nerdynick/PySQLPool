@@ -113,23 +113,39 @@ class ConnectionManager(object):
 		self.lastConnectionCheck = None
 		
 	def lock(self, block=True):
+		"""
+		Lock connection from being used else where
+		"""
 		self._locked = True
 		return self._lock.acquire(block)
 		
 	def release(self):
-		self._locked = False
-		self._lock.release()
+		"""
+		Release the connection lock
+		"""
+		if self._locked is True:
+			self._locked = False
+			self._lock.release()
 		
 	def is_locked(self):
+		"""
+		Returns the status of this connection
+		"""
 		return self._locked
 	
 	def getCursor(self):
+		"""
+		Get a Dictionary Cursor for executing queries
+		"""
 		if self.connection is None:
 			self.Connect()
 			
 		return self.connection.cursor(MySQLdb.cursors.DictCursor)
 		
 	def _updateCheckTime(self):
+		"""
+		Updates the connection check timestamp
+		"""
 		self.lastConnectionCheck = datetime.datetime.now()
 
 	def Connect(self):
@@ -185,6 +201,23 @@ class ConnectionManager(object):
 				return False
 		else:
 			return True
+		
+	def being(self):
+		"""
+		Being a Transaction
+		
+		@author: Nick Verbeck
+		@since: 5/14/2011
+		"""
+		try:
+			if self.connection is not None:
+				self.lock()
+				c = self.getCursor()
+				c.execute('BEGIN;')
+				c.close()
+		except Exception, e:
+			pass
+				
 			
 	def commit(self):
 		"""
@@ -200,6 +233,7 @@ class ConnectionManager(object):
 			if self.connection is not None:
 				self.connection.commit()
 				self._updateCheckTime()
+				self.release()
 		except Exception, e:
 			pass
 	Commit = commit
@@ -218,6 +252,7 @@ class ConnectionManager(object):
 			if self.connection is not None:
 				self.connection.rollback()
 				self._updateCheckTime()
+				self.release()
 		except Exception, e:
 			pass
 	
