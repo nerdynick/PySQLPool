@@ -1,7 +1,7 @@
 import unittest
 
 def suite():
-	modules = ['testPool', 'testConnection', 'testQuery', 'testTransaction', 'testLogging']
+	modules = ['testConnection', 'testConnectionManager', 'testPool', 'testQuery', 'testTransaction', 'testLogging']
 	alltests = unittest.TestSuite()
 	for module in map(__import__, modules):
 		alltests.addTest(unittest.findTestCases(module))

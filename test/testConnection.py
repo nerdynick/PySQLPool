@@ -15,7 +15,6 @@ def suite():
 	loader = unittest.TestLoader()
 	alltests = unittest.TestSuite()
 	alltests.addTest(loader.loadTestsFromTestCase(Connection))
-	alltests.addTest(loader.loadTestsFromTestCase(ConnectionManager))
 		
 	return alltests
 #	return unittest.TestLoader().loadTestsFromTestCase(Connection)
@@ -124,62 +123,6 @@ class Connection(unittest.TestCase):
 			self.assertEqual(connection.info['port'], conArgs[4], msg="Ports don't match")
 		except Exception, e:
 			self.fail("Failed to create connection with error: "+str(e))
-		
-		
-class ConnectionManager(unittest.TestCase):
-	
-	def setUp(self):
-		self.username = 'unittest'
-		self.password = 'zEzaj37u'
-		self.host = 'localhost'
-		self.db = 'employees'
-		
-		
-		self.connDict = {
-					"host":self.host,
-					"user":self.username,
-					"passwd":self.password,
-					"db":self.db}
-
-	def testConnectionManagerCreation(self):
-		"""
-		Test the creation of a Connection Manager Object
-		"""
-		connectionInfo = PySQLPool.getNewConnection(**self.connDict)
-		self.assertTrue(isinstance(connectionInfo, PySQLPool.connection.Connection))
-		
-		connection = PySQLPool.connection.ConnectionManager(connectionInfo)
-		self.assertTrue(isinstance(connection, PySQLPool.connection.ConnectionManager), msg="Not an instance")
-		
-	def testConnectionManagerBasicLock(self):
-		"""
-		Test the locking of a Connection Manager Object
-		"""
-		connectionInfo = PySQLPool.getNewConnection(**self.connDict)
-		self.assertTrue(isinstance(connectionInfo, PySQLPool.connection.Connection))
-		
-		connection = PySQLPool.connection.ConnectionManager(connectionInfo)
-		self.assertTrue(isinstance(connection, PySQLPool.connection.ConnectionManager), msg="Not an instance")
-		
-		#Test raw boolean and func return
-		self.assertFalse(connection._locked, msg="Lock Bool not init false")
-		self.assertFalse(connection.is_locked(), msg="Lock Bool Func not init false")
-		
-		locked = connection.lock()
-		
-		self.assertTrue(connection._locked, msg="Lock Bool not true")
-		self.assertTrue(connection.is_locked(), msg="Lock Bool Func not true")
-		self.assertTrue(locked, msg="Return not true")
-		
-		connection.release()
-		self.assertFalse(connection._locked, msg="Lock Bool not false")
-		self.assertFalse(connection.is_locked(), msg="Lock Bool Func not false")
-		
-	def testConnectionManagerTransaction(self):
-		pass
-	
-	def testConnectionManagerTransRollback(self):
-		pass
 
 if __name__ == "__main__":
 	unittest.main(defaultTest='suite')
