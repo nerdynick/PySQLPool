@@ -54,17 +54,17 @@ class Pool(object):
 		try:
 			for bucket in self.connections.values():
 				try:
-					for conn in bucket.values():
-						conn.lock.acquire()
+					for conn in bucket:
+						conn.lock()
 						try:
 							conn.Close()
 						except Exception:
 							#We may throw exceptions due to already closed connections
 							pass
-						conn.lock.release()
+						conn.release()
 				except Exception:
 					pass
-			self.conn = {}
+			self.connections = {}
 		finally:
 			self.lock.release()
 
@@ -81,15 +81,19 @@ class Pool(object):
 		try:
 			for bucket in self.connections.values():
 				try:
-					for conn in bucket.values():
-						conn.lock.acquire()
+					for conn in bucket:
+						conn.lock()
 						try:
 							open = conn.TestConnection(forceCheck=True)
 							if open is True:
 								conn.commit()
+							else:
+								#Remove the connection from the pool. Its dead better of recreating it.
+								index = bucket.index(conn)
+								del bucket[index]
+							conn.release()
 						except Exception:
-							pass
-						conn.lock.release()
+							conn.release()
 				except Exception:
 					pass
 		finally:
@@ -106,13 +110,13 @@ class Pool(object):
 		try:
 			for bucket in self.connections.values():
 				try:
-					for conn in bucket.values():
-						conn.lock.acquire()
+					for conn in bucket:
+						conn.lock()
 						try:
 							conn.commit()
+							conn.release()
 						except Exception:
-							pass
-						conn.lock.release()
+							conn.release()
 				except Exception:
 					pass
 		finally:
@@ -130,64 +134,68 @@ class Pool(object):
 		@since: 5/12/2008   
 		"""
 		
-		#Lock the Connection Collection/Pool
-		
-		key = ConnectionObj.key
+		key = ConnectionObj.getKey()
 		
 		connection = None
 		
 		if self.connections.has_key(key):
-			for conn in self.connections[key].values():
-				#Grab an active connection if maxActivePerConnection is not meet
-				#TODO: Implement a max usage per connection object
-				if not conn.is_locked():
-					conn.lock()
-					try:
-						if conn.TestConnection() is False:
-							conn.ReConnect()
-							
-						connection = conn
-						conn.release()
-					except Exception:
-						conn.release()
-						raise
-				
+			connection = self._getConnectionFromPoolSet(key)
+			
 			if connection is None:
-				#Create a new Connection if Max Connections is not meet
-				connKey = len(self.connections[key])
-				if connKey <= self.maxActiveConnections:
-					self.lock.acquire()
-					self.connections[key][connKey] = self._createConnection(ConnectionObj)
+				self.lock.acquire()
+				if len(self.connections[key]) < self.maxActiveConnections:
+					#Create a new connection
+					connection = self._createConnection(ConnectionObj)
+					self.connections[key].append(connection)
 					self.lock.release()
 				else:
-					#TODO: We have maxed out a connection pool. Wait for a connection to become free
-					pass
+					#Wait for a free connection. We maintain the lock on the pool so we are the 1st to get a connection.
+					while connection is None:
+						connection = self._getConnectionFromPoolSet(key)
+					self.lock.release()
 					
 		#Create new Connection Pool Set
 		else:
 			self.lock.acquire()
-			self.connections[key] = {}
-			self.connections[key][0] = self._createConnection(ConnectionObj)
+			#We do a double check now that its locked to be sure some other thread didn't create this while we may have been waiting.
+			if not self.connections.has_key(key):
+				self.connections[key] = []
+			
+			if len(self.connections[key]) < self.maxActiveConnections:
+				#Create a new connection
+				connection = self._createConnection(ConnectionObj)
+				self.connections[key].append(connection)
+			else:
+				#A rare thing happened. So many threads created connections so fast we need to wait for a free one.
+				while connection is None:
+					connection = self._getConnectionFromPoolSet(key)
 			self.lock.release()
-
-		if connection is not None:
-			connection.activeConnections += 1
 			
 		return connection
+	
+	def _getConnectionFromPoolSet(self, key):
+		connection = None
+		
+		for conn in self.connections[key].values():
+			#Grab an active connection if maxActivePerConnection is not meet
+			#TODO: Implement a max usage per connection object
+			if not conn.is_locked():
+				conn.lock()
+				try:
+					if conn.TestConnection() is False:
+						conn.ReConnect()
+						
+					connection = conn
+					conn.release()
+				except Exception:
+					conn.release()
+					raise
+				
+		return connection
+				
 	
 	def _createConnection(self, info):
 		connection = ConnectionManager(info)
 		connection.Connect()
 		
 		return connection
-	
-	def returnConnection(self, connObj):
-		"""
-		Return connection back to the pool for reuse.
-		
-		@author: Nick Verbeck
-		@since: 5/12/2008
-		"""
-		connObj.activeConnections -= 1
-		connObj.query = None
-		connObj.lock.release()

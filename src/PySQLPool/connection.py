@@ -78,6 +78,9 @@ class Connection(object):
 			return self.info[name]
 		except Exception, e:
 			return None
+		
+	def getKey(self):
+		return self.key
   
 
 connection_timeout = datetime.timedelta(seconds=20)
