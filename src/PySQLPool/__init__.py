@@ -69,7 +69,7 @@ def getNewPool():
 	@author: Nick Verbeck
 	@since: 5/12/2008
 	"""
-	return pool.PySQLPool()
+	return pool.Pool()
 
 def terminatePool():
 	"""
@@ -78,7 +78,7 @@ def terminatePool():
 	@author: Nick Verbeck
 	@since: 5/12/2008
 	"""
-	pool.PySQLPool().Terminate()
+	pool.Pool().Terminate()
 	
 def commitPool():
 	"""
@@ -87,7 +87,7 @@ def commitPool():
 	@author: Nick Verbeck
 	@since: 9/12/2008
 	"""
-	pool.PySQLPool().Commit()	
+	pool.Pool().Commit()	
 	
 def cleanupPool():
 	"""
@@ -96,4 +96,4 @@ def cleanupPool():
 	@author: Nick Verbeck
 	@since: 9/12/2008
 	"""
-	pool.PySQLPool().Cleanup()	
+	pool.Pool().Cleanup()	
