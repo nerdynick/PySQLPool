@@ -4,7 +4,7 @@ Created on May 14, 2011
 @author: nick
 '''
 import unittest
-import PySQLPool
+from PySQLPool import pool, connection
 from mock import Mock
 
 def suite():
@@ -14,15 +14,56 @@ def suite():
         
     return alltests
 
-class Pool:
+class Pool(unittest.TestCase):
     def setUp(self):
-        pass
+        
+        self.connDict = {
+                    "host":'localhost',
+                    "user":'unittest',
+                    "passwd":'zEzaj37u',
+                    "db":'employees'}
     
     def testPoolBorg(self):
-        pass
+        poolObj = pool.Pool()
+        poolObj2 = pool.Pool()
+        
+        self.assertTrue(poolObj.connections is poolObj2.connections, msg="Connections don't match")
+        self.assertTrue(poolObj.lock is poolObj2.lock, msg="Lock dosn't match")
+        
     
     def testPoolGetConnection(self):
-        pass
+        #Create a mock connection object
+        connObj = Mock(spec=connection.Connection)
+        connObj.getKey.return_value = 'test_key'
+        
+        #Override the ConnectionManager for the Pool
+        connManager = Mock(spec=connection.ConnectionManager)
+        connManager.return_value = connManager
+        connManager.is_locked.return_value = False
+        pool.ConnectionManager = connManager
+        
+        #Make sure we get a ConnectionManager Object back
+        connManObj = pool.Pool().GetConnection(connObj)
+        self.assertTrue(isinstance(connManObj, connection.ConnectionManager), msg="Didn't get a ConnectionManager Object back")
+        
+        #Make sure our pool set persisted
+        self.assertTrue(pool.Pool().connections.has_key('test_key'), msg="Pool doesn't contain our pool set")
+        
+        #Make sure our pool set only contains 1 connection object
+        self.assertTrue(len(pool.Pool().connections['test_key']) == 1, msg="Pool doesn't contain only 1 connection for our pool set")
+        
+        #Re-fetch our ConnectionManager to make sure 2nd lookup work
+        connManObj = pool.Pool().GetConnection(connObj)
+        
+        #Make sure our pool set only contains 1 connection object even after a 2nd call
+        self.assertTrue(len(pool.Pool().connections['test_key']) == 1, msg="Pool doesn't contain only 1 connection for our pool set on 2nd call")
+        
+        #Make sure the correct methods where called as needed on the ConnectionManager
+        connManager.Connect.assert_called_once_with()
+        connManager.lock.assert_called_once_with()
+        connManager.TestConnection.assert_called_once_with()
+        connManager.release.assert_called_once_with()
+        
     
     def testPoolTerminate(self):
         pass
@@ -41,3 +82,6 @@ class Pool:
     
     def testPoolMultiThreadGetConnectionWithTransactions(self):
         pass
+
+if __name__ == "__main__":
+    unittest.main(defaultTest='suite')

@@ -176,7 +176,7 @@ class Pool(object):
 	def _getConnectionFromPoolSet(self, key):
 		connection = None
 		
-		for conn in self.connections[key].values():
+		for conn in self.connections[key]:
 			#Grab an active connection if maxActivePerConnection is not meet
 			#TODO: Implement a max usage per connection object
 			if not conn.is_locked():

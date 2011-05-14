@@ -81,7 +81,6 @@ class Connection(object):
 		
 	def getKey(self):
 		return self.key
-  
 
 connection_timeout = datetime.timedelta(seconds=20)
 
