@@ -2,7 +2,7 @@
 
 from distutils.core import setup
 
-__version__ = '0.3.7'
+__version__ = '0.3.8'
 __author__ = 'Nick Verbeck'
 __author_email__ = 'nerdynick@gmail.com'
 
