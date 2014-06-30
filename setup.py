@@ -1,14 +1,19 @@
 #!/usr/bin/env python
 
 from distutils.core import setup
-import PySQLPool
+
+__version__ = '0.3.8'
+__author__ = 'Nick Verbeck'
+__author_email__ = 'nerdynick@gmail.com'
 
 setup(name='PySQLPool',
-      version=PySQLPool.__version__,
+      version=__version__,
+      author=__author__,
+      author_email=__author_email__,
+      license='LGPL V3',
+      platforms=['ALL'],
       description='Python MySQL Connection Pooling and MySQL Query management',
-      author='Nick Verbeck',
-      author_email='nerdynick@gmail.com',
-      url='http://code.google.com/p/pysqlpool/',
+      url='https://github.com/nerdynick/PySQLPool/',
       download_url="http://code.google.com/p/pysqlpool/downloads/list",
       classifiers = [
                      'Topic :: Software Development :: Libraries :: Python Modules',
@@ -16,5 +21,8 @@ setup(name='PySQLPool',
                      'Programming Language :: Python',
                      'Operating System :: OS Independent',
                      'Development Status :: 5 - Production/Stable'],
+      install_requires=['MySQL_python'],
+      provides=['pysqlpool','PySQLPool'],
       packages=['PySQLPool'],
+      package_dir={'PySQLPool': 'PySQLPool/PySQLPool'}
      )
